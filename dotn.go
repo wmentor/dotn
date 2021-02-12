@@ -157,3 +157,16 @@ func (obj *Object) Fields() []string {
 
 	return fields
 }
+
+func (obj *Object) IsArray() bool {
+
+	fields := obj.Fields()
+
+	for _, v := range fields {
+		if _, err := strconv.Atoi(v); err != nil {
+			return false
+		}
+	}
+
+	return true
+}
