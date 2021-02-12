@@ -75,4 +75,9 @@ te=123
 
 	tInterface(obj, "map[map1:map[hello:world map2:map[key:123 list:[1 2 3] list2:[map[tl1:true tl2:false] 13]]] te:123]")
 	tInterface(nobj, "[1 2 3]")
+
+	obj.Delete("map1.map2.list")
+	tInterface(obj, "map[map1:map[hello:world map2:map[key:123 list2:[map[tl1:true tl2:false] 13]]] te:123]")
+	obj.Delete("map1.hello")
+	tInterface(obj, "map[map1:map[map2:map[key:123 list2:[map[tl1:true tl2:false] 13]]] te:123]")
 }

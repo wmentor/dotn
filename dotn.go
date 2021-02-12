@@ -216,3 +216,20 @@ func (obj *Object) Interface() interface{} {
 
 	return res
 }
+
+func (obj *Object) Delete(path string) {
+
+	if _, has := obj.data[path]; has {
+		delete(obj.data, path)
+	} else {
+		res := make(map[string]interface{})
+
+		for k, v := range obj.data {
+			if !strings.HasPrefix(k, path+".") {
+				res[k] = v
+			}
+		}
+
+		obj.data = res
+	}
+}
