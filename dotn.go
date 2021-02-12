@@ -2,7 +2,6 @@ package dotn
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -47,16 +46,19 @@ func (obj *Object) String() string {
 	return buf.String()
 }
 
+// create dotn.Object from custom struct or map
 func New(v interface{}) (*Object, error) {
 
-	data, err := json.Marshal(v)
+	codec := NewJsonCodec()
+
+	data, err := codec.Marshal(v)
 	if err != nil {
 		return nil, err
 	}
 
 	var res map[string]interface{}
 
-	err = json.Unmarshal(data, &res)
+	err = codec.Unmarshal(data, &res)
 	if err != nil {
 		return nil, err
 	}
