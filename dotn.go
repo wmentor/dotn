@@ -10,10 +10,12 @@ import (
 	"strings"
 )
 
+// object is realizing dot notation
 type Object struct {
 	data map[string]interface{}
 }
 
+// func set value by dot notation
 func (obj *Object) Set(key string, value interface{}) {
 	if value == nil {
 		delete(obj.data, key)
@@ -22,11 +24,13 @@ func (obj *Object) Set(key string, value interface{}) {
 	}
 }
 
+// get value by dot notation
 func (obj *Object) Get(key string) (interface{}, bool) {
 	v, has := obj.data[key]
 	return v, has
 }
 
+// return data as string format
 func (obj *Object) String() string {
 
 	list := make([]string, 0, len(obj.data))
@@ -118,6 +122,7 @@ func (obj *Object) nodeWork(v interface{}, base string) error {
 	return nil
 }
 
+// return subnode via dot notation
 func (obj *Object) Node(path string) *Object {
 
 	if !strings.HasSuffix(path, ".") {
@@ -139,6 +144,7 @@ func (obj *Object) Node(path string) *Object {
 	return newObj
 }
 
+// return top level fields or array indexes
 func (obj *Object) Fields() []string {
 
 	keys := map[string]bool{}
@@ -160,6 +166,7 @@ func (obj *Object) Fields() []string {
 	return fields
 }
 
+// check object "is array"
 func (obj *Object) IsArray() bool {
 
 	fields := obj.Fields()
@@ -173,6 +180,7 @@ func (obj *Object) IsArray() bool {
 	return true
 }
 
+// return data object interface
 func (obj *Object) Interface() interface{} {
 
 	fields := obj.Fields()
@@ -217,6 +225,7 @@ func (obj *Object) Interface() interface{} {
 	return res
 }
 
+// delete sub node via dot notation
 func (obj *Object) Delete(path string) {
 
 	if _, has := obj.data[path]; has {
@@ -232,4 +241,16 @@ func (obj *Object) Delete(path string) {
 
 		obj.data = res
 	}
+}
+
+// decode object to input value via json.Unmarshal
+func (obj *Object) Decode(v interface{}) error {
+	codec := NewJsonCodec()
+
+	data, err := codec.Marshal(obj.data)
+	if err != nil {
+		return err
+	}
+
+	return codec.Unmarshal(data, v)
 }
