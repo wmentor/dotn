@@ -1,6 +1,7 @@
 package dotn
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 	"testing"
@@ -14,6 +15,9 @@ func TestFilter(t *testing.T) {
 			"map2": map[string]interface{}{
 				"key":  123,
 				"list": []interface{}{1, 2, 3},
+				"list2": []interface{}{map[string]interface{}{"tl1": true, "tl2": false},
+					"13",
+				},
 			},
 		},
 	})
@@ -30,7 +34,7 @@ func TestFilter(t *testing.T) {
 
 	tString := func(obj *Object, wait string) {
 		if obj.String() != wait {
-			t.Fatalf("Invalid String() result")
+			t.Fatalf("Invalid String() result:\n%s", obj.String())
 		}
 	}
 
@@ -40,11 +44,21 @@ func TestFilter(t *testing.T) {
 		}
 	}
 
+	tInterface := func(obj *Object, wait string) {
+		str := fmt.Sprintf("%v", obj.Interface())
+		if str != wait {
+			t.Fatalf("result=%s", str)
+		}
+	}
+
 	tString(obj, `map1.hello=world
 map1.map2.key=123
 map1.map2.list.0=1
 map1.map2.list.1=2
 map1.map2.list.2=3
+map1.map2.list2.0.tl1=true
+map1.map2.list2.0.tl2=false
+map1.map2.list2.1=13
 te=123
 `)
 
@@ -58,4 +72,7 @@ te=123
 
 	tIsArray(obj, false)
 	tIsArray(nobj, true)
+
+	tInterface(obj, "map[map1:map[hello:world map2:map[key:123 list:[1 2 3] list2:[map[tl1:true tl2:false] 13]]] te:123]")
+	tInterface(nobj, "[1 2 3]")
 }

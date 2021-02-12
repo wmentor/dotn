@@ -170,3 +170,47 @@ func (obj *Object) IsArray() bool {
 
 	return true
 }
+
+func (obj *Object) Interface() interface{} {
+
+	fields := obj.Fields()
+
+	if obj.IsArray() {
+
+		list := []interface{}{}
+
+		indexes := make([]int, len(fields))
+
+		for i, f := range fields {
+			indexes[i], _ = strconv.Atoi(f)
+		}
+
+		sort.Ints(indexes)
+
+		for _, idx := range indexes {
+			key := strconv.Itoa(idx)
+
+			if v, has := obj.data[key]; has {
+				list = append(list, v)
+			} else {
+				nobj := obj.Node(key)
+				list = append(list, nobj.Interface())
+			}
+		}
+
+		return list
+	}
+
+	res := make(map[string]interface{})
+
+	for _, key := range fields {
+		if v, has := obj.data[key]; has {
+			res[key] = v
+		} else {
+			nobj := obj.Node(key)
+			res[key] = nobj.Interface()
+		}
+	}
+
+	return res
+}
