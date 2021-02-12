@@ -19,14 +19,14 @@ func TestFilter(t *testing.T) {
 
 	fmt.Print(obj)
 
-	fmt.Println("----------")
+	fmt.Println("-----------")
 	fmt.Println(obj.Fields())
 
-	fmt.Println("----------")
+	fmt.Println("-----------")
 
 	nobj := obj.Node("map1.map2.list")
 	fmt.Print(nobj)
 
-	fmt.Println("----------")
+	fmt.Println("-----------")
 	fmt.Println(nobj.Fields())
 }
