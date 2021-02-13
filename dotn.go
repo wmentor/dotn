@@ -249,8 +249,11 @@ func (obj *Object) Delete(path string) {
 // decode object to input value via json.Unmarshal
 func (obj *Object) Decode(v interface{}) error {
 	codec := NewJsonCodec()
+	return obj.DecodeWithCodec(v, codec)
+}
 
-	data, err := codec.Marshal(obj.data)
+func (obj *Object) DecodeWithCodec(v interface{}, codec Codec) error {
+	data, err := codec.Marshal(obj.Interface())
 	if err != nil {
 		return err
 	}
