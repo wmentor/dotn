@@ -50,10 +50,7 @@ func (obj *Object) String() string {
 	return buf.String()
 }
 
-// create dotn.Object from custom struct or map
-func New(v interface{}) (*Object, error) {
-
-	codec := NewJsonCodec()
+func NewWithCodec(v interface{}, codec Codec) (*Object, error) {
 
 	data, err := codec.Marshal(v)
 	if err != nil {
@@ -74,6 +71,12 @@ func New(v interface{}) (*Object, error) {
 	}
 
 	return obj, nil
+}
+
+// create dotn.Object from custom struct or map
+func New(v interface{}) (*Object, error) {
+	codec := NewJsonCodec()
+	return NewWithCodec(v, codec)
 }
 
 func (obj *Object) nodeWork(v interface{}, base string) error {
